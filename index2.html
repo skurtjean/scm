@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="PT">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Snake97 Game</title>
+        <style>
+            body {
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                height: 100vh;
+                margin: 0;
+                background-color: #222;
+            }
+    
+            #game-container {
+                width: 300px;
+                height: 300px;
+                border: 2px solid #FFF;
+                position: relative;
+            }
+    
+            .snake-part {
+                width: 20px;
+                height: 20px;
+                background-color: #0F0;
+                position: absolute;
+            }
+    
+            #food {
+                width: 20px;
+                height: 20px;
+                background-color: #F00;
+                position: absolute;
+            }
+        </style>
+    </head>
+    <body>
+        <div id="game-container">
+            <div id="food"></div>
+        </div>
+    
+        <script>
+            const gameContainer = document.getElementById("game-container");
+            const food = document.getElementById("food");
+            let snake = [{x: 0, y: 0}];
+            let direction = "right";
+            let isMoving = false;
+    
+            function getRandomPosition() {
+                return {
+                    x: Math.floor(Math.random() * 15) * 20,
+                    y: Math.floor(Math.random() * 15) * 20
+                };
+            }
+    
+            function updateSnakePosition() {
+                const head = Object.assign({}, snake[0]);
+                switch (direction) {
+                    case "up":
+                        head.y -= 20;
+                        break;
+                    case "down":
+                        head.y += 20;
+                        break;
+                    case "left":
+                        head.x -= 20;
+                        break;
+                    case "right":
+                        head.x += 20;
+                        break;
+                }
+    
+                snake.unshift(head);
+    
+                if (head.x === foodPosition.x && head.y === foodPosition.y) {
+                    foodPosition = getRandomPosition();
+                    food.style.left = foodPosition.x + "px";
+                    food.style.top = foodPosition.y + "px";
+                } else {
+                    snake.pop();
+                }
+    
+                for (let i = 0; i < snake.length; i++) {
+                    const part = document.createElement("div");
+                    part.classList.add("snake-part");
+                    part.style.left = snake[i].x + "px";
+                    part.style.top = snake[i].y + "px";
+                    gameContainer.appendChild(part);
+                }
+    
+                isMoving = false;
+            }
+    
+            let foodPosition = getRandomPosition();
+            food.style.left = foodPosition.x + "px";
+            food.style.top = foodPosition.y + "px";
+    
+            setInterval(() => {
+                if (!isMoving) {
+                    isMoving = true;
+                    updateSnakePosition();
+                }
+            }, 200);
+    
+            document.addEventListener("keydown", (event) => {
+                if (!isMoving) return;
+    
+                switch (event.key) {
+                    case "ArrowUp":
+                        if (direction !== "down") direction = "up";
+                        break;
+                    case "ArrowDown":
+                        if (direction !== "up") direction = "down";
+                        break;
+                    case "ArrowLeft":
+                        if (direction !== "right") direction = "left";
+                        break;
+                    case "ArrowRight":
+                        if (direction !== "left") direction = "right";
+                        break;
+                }
+            });
+        </script>
+    </body>
+    </html>
